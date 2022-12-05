@@ -1,9 +1,18 @@
 class Rucksack
+    @@capital_offset = 38
+    @@lowercase_offset = 96
+
     def initialize(lines)
         @first, @second, @third = lines.map(&:chars)
     end
+
     def shared_item
-        @first.intersection(@second).intersection(@third).first
+        @shared_item = @first.intersection(@second).intersection(@third).first
+    end
+
+    def get_priority
+        return shared_item.ord - @@capital_offset if shared_item.downcase != shared_item
+        shared_item.ord - @@lowercase_offset
     end
 end
 
@@ -13,10 +22,5 @@ def build_rucksacks(filename)
         .map { |lines| Rucksack.new(lines) }
 end
 
-def get_priority(item)
-    return item.ord - 64 + 26 if item.downcase != item
-    item.ord - 96
-end
-
 sacks = build_rucksacks('input.txt')
-puts(sacks.map(&:shared_item).map(&method(:get_priority)).sum)
+puts(sacks.map(&:get_priority).sum)
